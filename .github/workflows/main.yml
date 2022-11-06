@@ -1,0 +1,119 @@
+name: Blogs  
+on: [push]
+jobs:
+  deploy_source:
+    name: Deploy API Using Lambda
+    strategy:
+      matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
+    
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+        env:
+          CI: true
+
+      - name: /blogs get lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-g.zip blogs/get/index.js node_modules
+      - name: blog get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-g
+            zip_file: m-s-blogs-g.zip
+      - name: /blogs post lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-po.zip blogs/post/index.js node_modules
+      - name: blog get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-po
+            zip_file: m-s-blogs-po.zip
+      - name: /blogs/{blog_id} get lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-g.zip blogs/blog_id/get/index.js node_modules
+      - name: blog get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-g
+            zip_file: m-s-blogs-blog-g.zip
+      - name: /blogs/{blog_id} put lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-pu.zip blogs/blog_id/put/index.js node_modules
+      - name: blog get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-pu
+            zip_file: m-s-blogs-blog-pu.zip
+      - name: /blogs/{blog_id} delete lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-d.zip blogs/blog_id/delete/index.js node_modules
+      - name: blog get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-d
+            zip_file: m-s-blogs-blog-d.zip          
+      - name: /blogs/{blog_id}/tags get lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-tags-g.zip blogs/blog_id/tags/get/index.js node_modules
+      - name: blogs get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-tags-g
+            zip_file: m-s-blogs-blog-tags-g.zip
+      - name: /blogs/{blog_id}/tags post lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-tags-po.zip blogs/blog_id/tags/post/index.js node_modules
+      - name: blogs get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-tags-po
+            zip_file: m-s-blogs-blog-tags-po.zip
+      - name: /blogs/{blog_id}/tags/{tag_id} delete lambda deploy zip
+        uses: postman-open-technologies/blogs@main
+        with:
+            args: zip -qq -r m-s-blogs-blog-tags-tag-d.zip blogs/blog_id/tags/tag_id/delete/index.js node_modules
+      - name: blogs get lambda deploy
+        uses: appleboy/lambda-action@master
+        with:
+            aws_access_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_region: us-west-1
+            function_name: m-s-blogs-blog-tags-tag-d
+            zip_file: m-s-blogs-blog-tags-tag-d.zip            
