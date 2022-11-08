@@ -35,8 +35,8 @@ exports.handler = vandium.generic()
     if(event.limit){
       limit = event.limit;
     }   
-    if(limit > 25){
-      limit = 25;
+    if(limit > 1000){
+      limit = 1000;
     }
 
     var sql = "SELECT * FROM blogs b WHERE id IS NOT NULL";
